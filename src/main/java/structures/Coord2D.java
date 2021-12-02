@@ -1,7 +1,7 @@
 package structures;
 
 /*
-* Mathematical point (virtual).
+ * Mathematical(virtual) point.
  */
 public final class Coord2D {
     private final double x;
@@ -17,11 +17,11 @@ public final class Coord2D {
     }
 
     public double getY() {
-        return x;
+        return y;
     }
 
     @Override
-    public boolean equals(Object object){
+    public boolean equals(Object object) {
         if (object == this) {
             return true;
         }
@@ -30,20 +30,16 @@ public final class Coord2D {
         }
 
         Coord2D coord = (Coord2D) object;
-        if(this.x == coord.x && this.y == coord.y){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return this.x == coord.x && this.y == coord.y;
     }
 
     @Override
     public int hashCode() {
         return this.toString().hashCode();
     }
+
     @Override
-    public String toString(){
-        return Double.toString(this.x) + ";" + Double.toString(this.y);
+    public String toString() {
+        return this.x + ";" + this.y;
     }
 }
