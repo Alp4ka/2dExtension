@@ -1,7 +1,10 @@
 package structures;
 
-/*
- * Mathematical(virtual) point.
+/**
+ * Mathematical(virtual) point class.
+ *
+ * @author Gorkovets Roman
+ * @version 1.0
  */
 public final class Coord2D implements Memorizable {
     public static final String HEADER_FORMAT = "Coordinates{x:%f;y:%f}";
@@ -39,6 +42,11 @@ public final class Coord2D implements Memorizable {
         return this.toString().hashCode();
     }
 
+    /**
+     * Summarize original coord with the second one and return a result.
+     *
+     * @author Gorkovets Roman
+     */
     public Coord2D add(Coord2D secondCoord) {
         return new Coord2D(x + secondCoord.getX(), y + secondCoord.getY());
     }
@@ -48,11 +56,21 @@ public final class Coord2D implements Memorizable {
         return this.x + ";" + this.y;
     }
 
+    /**
+     * Serialize coord as string.
+     *
+     * @author Gorkovets Roman
+     */
     @Override
     public String serializeHeader() {
         return String.format(HEADER_FORMAT, getX(), getY());
     }
 
+    /**
+     * Serialize coord as record.
+     *
+     * @author Gorkovets Roman
+     */
     @Override
     public String serializeRecord() {
         return null;

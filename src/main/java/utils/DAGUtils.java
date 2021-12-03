@@ -1,7 +1,6 @@
 package utils;
 
 import structures.*;
-
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.HashMap;
@@ -11,14 +10,29 @@ public class DAGUtils {
     private static final String SPLIT_SECTION_SEPARATOR = "/";
     private static final String END_SECTION_SEPARATOR = "#";
 
+    /**
+     * Serialize as header memorizable object.
+     *
+     * @author Gorkovets Roman
+     */
     private static String serializeHeader(Memorizable memorizable) {
         return memorizable.serializeHeader();
     }
 
+    /**
+     * Serialize as record memorizable object.
+     *
+     * @author Gorkovets Roman
+     */
     private static String serializeRecord(Memorizable memorizable) {
         return memorizable.serializeRecord();
     }
 
+    /**
+     * Defines a structures which are able to move in space.
+     *
+     * @author Gorkovets Roman
+     */
     private static Memorizable parseHeader(String line, HashMap<Integer, Memorizable> mapping) throws ParseException {
         Memorizable result;
         String addressAttributeRepresentation = "address:";
@@ -67,6 +81,11 @@ public class DAGUtils {
         return new Coord2D(x, y);
     }
 
+    /**
+     * Export space as string.
+     *
+     * @author Gorkovets Roman
+     */
     public static String exportAsString(Space space) {
         String result = "";
         result += serializeHeader(space) + SPLIT_SECTION_SEPARATOR;
@@ -92,6 +111,11 @@ public class DAGUtils {
         return result;
     }
 
+    /**
+     * Parse space from string.
+     *
+     * @author Gorkovets Roman
+     */
     public static Space importFromString(String line) throws ParseException {
         try {
             Space result;

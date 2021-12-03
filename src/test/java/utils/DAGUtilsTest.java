@@ -21,6 +21,7 @@ class DAGUtilsTest {
         space.addMovable(p1);
         o1.addMovable(p1);
         var result = DAGUtils.exportAsString(space);
+        System.out.println(result);
         assertNotNull(result);
     }
 

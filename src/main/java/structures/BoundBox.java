@@ -14,10 +14,20 @@ public final class BoundBox {
         this.upperRight = upperRight;
     }
 
+    /**
+     * Get lower left bound of square.
+     *
+     * @author Gorkovets Roman
+     */
     public Coord2D getLowerLeft() {
         return lowerLeft;
     }
 
+    /**
+     * Get upper right bound of square.
+     *
+     * @author Gorkovets Roman
+     */
     public Coord2D getUpperRight() {
         return upperRight;
     }

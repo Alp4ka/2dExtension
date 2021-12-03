@@ -1,7 +1,10 @@
 package structures;
 
-/*
- * Physical points.
+/**
+ * Physical point class.
+ *
+ * @author Gorkovets Roman
+ * @version 1.0
  */
 public final class Point implements Movable, Stackable, Memorizable {
     public static final String HEADER_FORMAT = "Point{address:%d;coordinates:%s}";
@@ -46,7 +49,6 @@ public final class Point implements Movable, Stackable, Memorizable {
     public String serializeRecord() {
         return null;
     }
-
 
     @Override
     public String serializeHeader() {
