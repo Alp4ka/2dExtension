@@ -27,23 +27,27 @@ public final class Origin implements Movable, Stackable {
         this(new Coord2D(x, y));
     }
 
-    private void updateBounds(){
-        if(children == null || children.size() == 0){
+    private void updateBounds() {
+        if (children == null || children.size() == 0) {
             bounds = null;
             return;
         }
         double minX = Double.MAX_VALUE, maxX = Double.MIN_VALUE, minY = Double.MAX_VALUE, maxY = Double.MIN_VALUE;
         BoundBox temp;
-        for(var child: children){
-            if(child instanceof Stackable){
-                temp = ((Stackable)child).getBounds();
-                minX = Double.min(minX, temp.getLowerLeft().getX());
-                maxX = Double.max(maxX, temp.getUpperRight().getX());
-                minY = Double.min(minY, temp.getLowerLeft().getY());
-                maxX = Double.max(maxX, temp.getUpperRight().getY());
+        for (var child : children) {
+            temp = ((Stackable) child).getBounds();
+            minX = Double.min(minX, temp.getLowerLeft().getX());
+            maxX = Double.max(maxX, temp.getUpperRight().getX());
+            minY = Double.min(minY, temp.getLowerLeft().getY());
+            maxY = Double.max(maxY, temp.getUpperRight().getY());
+            if (child instanceof Origin) {
+                minX += child.getPosition().getX();
+                maxX += child.getPosition().getX();
+                minY += child.getPosition().getY();
+                maxY += child.getPosition().getY();
             }
         }
-        bounds = new BoundBox()
+        bounds = new BoundBox(new Coord2D(minX, minY), new Coord2D(maxX, maxY));
     }
 
     public void addMovable(Movable movable) throws DAGConstraintException {
