@@ -6,10 +6,11 @@ import utils.alogirthms.Color;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public final class Origin implements Movable, Stackable {
+public final class Origin implements Movable, Stackable, Memorizable {
+    public static final String HEADER_FORMAT = "Origin{address:%d;coordinates:%s}";
+    private final HashSet<Movable> children;
     private Coord2D position;
     private BoundBox bounds;
-    private final HashSet<Movable> children;
 
     public Origin() {
         position = null;
@@ -27,27 +28,52 @@ public final class Origin implements Movable, Stackable {
         this(new Coord2D(x, y));
     }
 
+    @Override
+    public String serializeRecord() {
+        String result = String.format("%d:", System.identityHashCode(this));
+        for (var child : getChildren()) {
+            if (child instanceof Memorizable) {
+                result += String.format("%d;", System.identityHashCode(child));
+            }
+        }
+        return result;
+    }
+
+    public HashSet<Movable> getAllChildren() {
+        HashSet<Movable> result = new HashSet<>();
+        for (var child : children) {
+            result.add(child);
+            if (child instanceof Origin) {
+                result.addAll(((Origin) child).getAllChildren());
+            }
+        }
+        return result;
+    }
+
     private void updateBounds() {
         if (children == null || children.size() == 0) {
             bounds = null;
             return;
         }
-        double minX = Double.MAX_VALUE, maxX = Double.MIN_VALUE, minY = Double.MAX_VALUE, maxY = Double.MIN_VALUE;
+        Coord2D lowerLeftCoord = new Coord2D(Double.MAX_VALUE, Double.MAX_VALUE);
+        Coord2D upperRightCoord = new Coord2D(-Double.MAX_VALUE, -Double.MAX_VALUE);
         BoundBox temp;
         for (var child : children) {
             temp = ((Stackable) child).getBounds();
-            minX = Double.min(minX, temp.getLowerLeft().getX());
-            maxX = Double.max(maxX, temp.getUpperRight().getX());
-            minY = Double.min(minY, temp.getLowerLeft().getY());
-            maxY = Double.max(maxY, temp.getUpperRight().getY());
+            lowerLeftCoord =
+                    new Coord2D(
+                            Double.min(lowerLeftCoord.getX(), temp.getLowerLeft().getX()),
+                            Double.min(lowerLeftCoord.getY(), temp.getLowerLeft().getY()));
+            upperRightCoord =
+                    new Coord2D(
+                            Double.max(upperRightCoord.getX(), temp.getUpperRight().getX()),
+                            Double.max(upperRightCoord.getY(), temp.getUpperRight().getY()));
             if (child instanceof Origin) {
-                minX += child.getPosition().getX();
-                maxX += child.getPosition().getX();
-                minY += child.getPosition().getY();
-                maxY += child.getPosition().getY();
+                lowerLeftCoord = lowerLeftCoord.add(child.getPosition());
+                upperRightCoord = upperRightCoord.add(child.getPosition());
             }
         }
-        bounds = new BoundBox(new Coord2D(minX, minY), new Coord2D(maxX, maxY));
+        bounds = new BoundBox(lowerLeftCoord, upperRightCoord);
     }
 
     public void addMovable(Movable movable) throws DAGConstraintException {
@@ -65,14 +91,14 @@ public final class Origin implements Movable, Stackable {
         return children;
     }
 
-    public boolean hasLoop() {
+    public boolean hasLoop() throws NullPointerException {
         HashMap<Movable, Color> all_elements = new HashMap<>();
         return depthSearch(this, all_elements);
     }
 
-    private boolean depthSearch(Movable node, HashMap<Movable, Color> all_elements) {
+    private boolean depthSearch(Movable node, HashMap<Movable, Color> all_elements) throws NullPointerException {
         if (node == null) {
-            throw new NullPointerException("Null point in graph. Can't calculate a loop!");
+            throw new NullPointerException("Null point in graph. Unexpected result!");
         }
         all_elements.put(node, Color.GRAY);
         if (node instanceof Origin) {
@@ -88,19 +114,15 @@ public final class Origin implements Movable, Stackable {
                     return true;
                 }
             }
-            all_elements.put(node, Color.BLACK);
-            return false;
-        } else {
-            all_elements.put(node, Color.BLACK);
-            return false;
         }
+        all_elements.put(node, Color.BLACK);
+        return false;
     }
 
     @Override
     public Coord2D getPosition() {
         return position;
     }
-
 
     @Override
     public void setPosition(Coord2D value) {
@@ -116,5 +138,13 @@ public final class Origin implements Movable, Stackable {
     public BoundBox getBounds() {
         updateBounds();
         return bounds;
+    }
+
+    @Override
+    public String serializeHeader() {
+        return String.format(
+                HEADER_FORMAT,
+                System.identityHashCode(this),
+                getPosition().serializeHeader());
     }
 }

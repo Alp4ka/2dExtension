@@ -3,7 +3,8 @@ package structures;
 /*
  * Physical points.
  */
-public final class Point implements Movable, Stackable {
+public final class Point implements Movable, Stackable, Memorizable {
+    public static final String HEADER_FORMAT = "Point{address:%d;coordinates:%s}";
     private Coord2D position;
     private BoundBox bounds;
 
@@ -39,5 +40,17 @@ public final class Point implements Movable, Stackable {
     public BoundBox getBounds() {
         bounds = new BoundBox(position, position);
         return bounds;
+    }
+
+    @Override
+    public String serializeRecord() {
+        return null;
+    }
+
+
+    @Override
+    public String serializeHeader() {
+        return String.format(
+                HEADER_FORMAT, System.identityHashCode(this), getPosition().serializeHeader());
     }
 }

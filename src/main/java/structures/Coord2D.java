@@ -3,7 +3,8 @@ package structures;
 /*
  * Mathematical(virtual) point.
  */
-public final class Coord2D {
+public final class Coord2D implements Memorizable {
+    public static final String HEADER_FORMAT = "Coordinates{x:%f;y:%f}";
     private final double x;
     private final double y;
 
@@ -38,8 +39,22 @@ public final class Coord2D {
         return this.toString().hashCode();
     }
 
+    public Coord2D add(Coord2D secondCoord) {
+        return new Coord2D(x + secondCoord.getX(), y + secondCoord.getY());
+    }
+
     @Override
     public String toString() {
         return this.x + ";" + this.y;
+    }
+
+    @Override
+    public String serializeHeader() {
+        return String.format(HEADER_FORMAT, getX(), getY());
+    }
+
+    @Override
+    public String serializeRecord() {
+        return null;
     }
 }
